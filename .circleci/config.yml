@@ -1,0 +1,58 @@
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+
+orbs:
+  terraform: circleci/terraform@3.2.1
+  # aws-cli: circleci/aws-cli@4.1.0
+  # docker: circleci/docker@2.2.0
+  # minikube: takescoop/minikube@1.0.1
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/configuration-reference/#jobs
+jobs:
+  deploy-infrastructure:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/init:
+          path: .
+      - terraform/validate:
+          path: .
+      - terraform/fmt:
+          path: .
+      - terraform/plan:
+          path: .
+      - terraform/apply:
+          path: .
+
+  # delete-infrastructure:
+  #   executor: terraform/default
+  #   steps:
+  #     - checkout
+  #     - terraform/destroy:
+  #         path: .
+
+#   example-job:
+#     docker:
+#       # replace with your preferred image
+#       - image: cimg/base:stable
+#     steps:
+#       - docker/install-docker
+#       - docker/dockerlint
+#       - docker/pull
+#       - docker/configure-docker-credentials-store
+
+#   example-job1:
+#     docker:
+#       # replace with your preferred image
+#       - image: cimg/base:stable
+#     steps:
+#       - minikube/install-kubectl
+#       - minikube/install
+#       - minikube/start
+
+workflows:
+  devops-project:
+    jobs:
+      - deploy-infrastructure
+      # - delete-infrastructure
