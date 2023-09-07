@@ -9,21 +9,21 @@ orbs:
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  deploy-infrastructure:
-    executor: terraform/default
-    steps:
-      - checkout
-      - terraform/init:
-          path: .
-      - terraform/validate:
-          path: .
-      - terraform/fmt:
-          path: .
-      - terraform/plan:
-          path: .
-      - terraform/apply:
-          path: .
+# jobs:
+  # deploy-infrastructure:
+  #   executor: terraform/default
+  #   steps:
+  #     - checkout
+  #     - terraform/init:
+  #         path: .
+  #     - terraform/validate:
+  #         path: .
+  #     - terraform/fmt:
+  #         path: .
+  #     - terraform/plan:
+  #         path: .
+  #     - terraform/apply:
+  #         path: .
 
   # delete-infrastructure:
   #   executor: terraform/default
@@ -54,5 +54,17 @@ jobs:
 workflows:
   devops-project:
     jobs:
-      - deploy-infrastructure
-      # - delete-infrastructure
+    - terraform/validate:
+        checkout: true
+        context: terraform
+    - terraform/plan:
+        checkout: true
+        context: terraform
+        persist-workspace: true
+        requires:
+        - terraform/validate
+    - terraform/apply:
+        attach-workspace: true
+        context: terraform
+        requires:
+        - terraform/plan
