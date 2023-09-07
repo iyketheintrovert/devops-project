@@ -2,11 +2,9 @@
 
 # Create User
 username="sage"
-#password="devops-project"
 
 sudo apt update
 sudo adduser --disabled-password --gecos "" $username
-#sudo passwd $password
 usermod -aG sudo $username
 su - $username
 
