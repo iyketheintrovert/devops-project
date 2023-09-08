@@ -10,17 +10,17 @@ orbs:
 jobs:
   deploy-infra:
     executor: terraform/default
-    working_directory: ~/web/terraform
+    working_directory: ~/devops-project/terraform
     steps:
       - checkout
       - terraform/init:
-          path: ~/web/terraform
+          path: ~/devops-project/terraform
       - terraform/validate:
-          path: ~/web/terraform
+          path: ~/devops-project/terraform
       - terraform/plan:
-          path: ~/web/terraform
+          path: ~/devops-project/terraform
       - terraform/apply:
-          path: ~/web/terraform
+          path: ~/devops-project/terraform
 
   # delete-infrastructure:
   #   executor: terraform/default
