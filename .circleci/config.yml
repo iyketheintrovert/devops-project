@@ -7,21 +7,28 @@ orbs:
   # docker: circleci/docker@2.2.0
   # minikube: takescoop/minikube@1.0.1
 
-commands:
-  destroy-infra:
-    description: destroys terraform infrastructure
-    steps:
-      - run:
-          name: Destroy environment
-          when: on_fail
-          command: |
-            terraform destroy
+# commands:
+#   destroy-infra:
+#     description: destroys terraform infrastructure
+#     steps:
+#       - run:
+#           name: Destroy environment
+#           when: on_fail
+#           command: |
+#             terraform destroy
 
 jobs:
   deploy-infra:
     executor: terraform/default
     steps:
       - checkout
+      - run:
+          name: Check Private Key File
+          command: |
+            if [ ! -f "$TF_VAR_privatekeypath" ]; then
+              echo "Error: Private key file not found at $TF_VAR_privatekeypath"
+              exit 1  # Fail the job
+            fi
       - terraform/init:
           path: main
       - terraform/validate:
@@ -30,7 +37,9 @@ jobs:
           path: main
       - terraform/apply:
           path: main
-      - destroy-infra
+      - terraform/destroy:
+          path: main
+      # - destroy-infra
     # working_directory: /terraform
   # delete-infrastructure:
   #   executor: terraform/default

@@ -1,7 +1,7 @@
 // Ebs volume and volume attachment
 
 resource "aws_ebs_volume" "sage-vol" {
-  availability_zone = "us-west-2a"
+  availability_zone = "us-east-1a"
   size              = 20
   tags = {
     Name = "sage-vol"
