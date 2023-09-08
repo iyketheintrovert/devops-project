@@ -8,7 +8,7 @@ resource "aws_instance" "devops-project" {
   associate_public_ip_address = true
 
   provisioner "file" {
-    source="/home/sageiyke/project-test/web/script.sh"
+    source="~/project-test/web/script.sh"
 
     destination="/tmp/script.sh"
   }

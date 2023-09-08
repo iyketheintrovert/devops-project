@@ -13,14 +13,14 @@ jobs:
     steps:
       - checkout
       - terraform/init:
-          path: /terraform/
+          path: .
       - terraform/validate:
-          path: /terraform/
+          path: .
       - terraform/plan:
-          path: /terraform/
+          path: .
       - terraform/apply:
-          path: /terraform/
-    # working_directory: devops-project/terraform
+          path: .
+    # working_directory: /terraform
   # delete-infrastructure:
   #   executor: terraform/default
   #   steps:
