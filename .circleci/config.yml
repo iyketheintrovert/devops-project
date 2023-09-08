@@ -19,9 +19,11 @@ orbs:
 
 jobs:
   deploy-infra:
+    parameters:
+      privatekeypath:
+        type: string
+        default: "/home/sageiyke/sage-key.pem"
     executor: terraform/default
-    environment:
-      TF_VAR_privatekeypath: "/home/sageiyke/sage-key.pem"
     steps:
       - checkout
       - terraform/init:
@@ -65,7 +67,8 @@ jobs:
 workflows:
   deploy-infra:
     jobs:
-    - deploy-infra
+    - deploy-infra:
+        privatekeypath: $privatekeypath
     # - terraform/validate:
     #     checkout: true
     #     context: terraform
