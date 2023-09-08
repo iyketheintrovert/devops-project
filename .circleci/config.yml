@@ -7,23 +7,20 @@ orbs:
   # docker: circleci/docker@2.2.0
   # minikube: takescoop/minikube@1.0.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
-# jobs:
-  # deploy-infrastructure:
-  #   executor: terraform/default
-  #   steps:
-  #     - checkout
-  #     - terraform/init:
-  #         path: .
-  #     - terraform/validate:
-  #         path: .
-  #     - terraform/fmt:
-  #         path: .
-  #     - terraform/plan:
-  #         path: .
-  #     - terraform/apply:
-  #         path: .
+jobs:
+  deploy-infra:
+    executor: terraform/default
+    working_directory: ~/web/terraform
+    steps:
+      - checkout
+      - terraform/init:
+          path: .
+      - terraform/validate:
+          path: .
+      - terraform/plan:
+          path: .
+      - terraform/apply:
+          path: .
 
   # delete-infrastructure:
   #   executor: terraform/default
@@ -52,19 +49,20 @@ orbs:
 #       - minikube/start
 
 workflows:
-  devops-project:
+  deploy-infratructure:
     jobs:
-    - terraform/validate:
-        checkout: true
-        context: terraform
-    - terraform/plan:
-        checkout: true
-        context: terraform
-        persist-workspace: true
-        requires:
-        - terraform/validate
-    - terraform/apply:
-        attach-workspace: true
-        context: terraform
-        requires:
-        - terraform/plan
+    - deploy-infra
+    # - terraform/validate:
+    #     checkout: true
+    #     context: terraform
+    # - terraform/plan:
+    #     checkout: true
+    #     context: terraform
+    #     persist-workspace: true
+    #     requires:
+    #     - terraform/validate
+    # - terraform/apply:
+    #     attach-workspace: true
+    #     context: terraform
+    #     requires:
+    #     - terraform/plan
