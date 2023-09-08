@@ -10,10 +10,10 @@ variable type {
   description = "instance type"
 }
 
-variable privatekeypath {
-  type        = string
-  default     = "/home/sageiyke/sage-key.pem"
-}
+# variable privatekeypath {
+#   type        = string
+#   default     = "/home/sageiyke/sage-key.pem"
+# }
 
 variable region {
   type        = string
