@@ -12,14 +12,15 @@ jobs:
     executor: terraform/default
     steps:
       - checkout
+      - command: 
       - terraform/init:
-          path: .
+          path: terraform
       - terraform/validate:
-          path: .
+          path: terraform
       - terraform/plan:
-          path: .
+          path: terraform
       - terraform/apply:
-          path: .
+          path: terraform
     # working_directory: /terraform
   # delete-infrastructure:
   #   executor: terraform/default
