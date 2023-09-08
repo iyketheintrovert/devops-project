@@ -19,21 +19,21 @@ orbs:
 
 jobs:
   deploy-infra:
-    parameters:
-      privatekeypath:
-        type: string
-        default: "/home/sageiyke/sage-key.pem"
+    - add_ssh_keys:
+        fingerprints: ["56:63:f5:1d:7c:df:61:70:19:79:82:96:d2:1b:ae:c7"]
     executor: terraform/default
     steps:
       - checkout
-      - terraform/init:
-          path: main
-      - terraform/validate:
-          path: main
-      - terraform/plan:
-          path: main
-      - terraform/apply:
-          path: main
+      # - terraform/init:
+      #     path: main
+      # - terraform/validate:
+      #     path: main
+      # - terraform/plan:
+      #     path: main
+      #     persist-workspace: true
+      # - terraform/apply:
+      #     path: main
+      #     attach-workspace: true
       - terraform/destroy:
           path: main
       # - destroy-infra
@@ -67,8 +67,7 @@ jobs:
 workflows:
   deploy-infra:
     jobs:
-    - deploy-infra:
-        privatekeypath: $privatekeypath
+    - deploy-infra
     # - terraform/validate:
     #     checkout: true
     #     context: terraform
