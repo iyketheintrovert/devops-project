@@ -10,18 +10,17 @@ orbs:
 jobs:
   deploy-infra:
     executor: terraform/default
-    working_directory: /devops-project/terraform
     steps:
       - checkout
       - terraform/init:
-          path: /devops-project/terraform
+          path: "devops-project/terraform"
       - terraform/validate:
-          path: /devops-project/terraform
+          path: devops-project/terraform
       - terraform/plan:
-          path: /devops-project/terraform
+          path: devops-project/terraform
       - terraform/apply:
-          path: /devops-project/terraform
-
+          path: devops-project/terraform
+    # working_directory: devops-project/terraform
   # delete-infrastructure:
   #   executor: terraform/default
   #   steps:
@@ -49,7 +48,7 @@ jobs:
 #       - minikube/start
 
 workflows:
-  deploy-infratructure:
+  deploy-infra:
     jobs:
     - deploy-infra
     # - terraform/validate:
