@@ -24,7 +24,7 @@ resource "aws_instance" "devops-project" {
     type = "ssh"
     host = self.public_ip
     user = "ubuntu"
-    private_key = file(var.privatekeypath)
+    private_key = file(var.TF_VAR_privatekeypath)
   }
 
   tags = {

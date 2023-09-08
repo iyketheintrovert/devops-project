@@ -20,15 +20,10 @@ orbs:
 jobs:
   deploy-infra:
     executor: terraform/default
+    environment:
+      TF_VAR_privatekeypath: "/home/sageiyke/sage-key.pem"
     steps:
       - checkout
-      - run:
-          name: Check Private Key File
-          command: |
-            if [ ! -f "$TF_VAR_privatekeypath" ]; then
-              echo "Error: Private key file not found at $TF_VAR_privatekeypath"
-              exit 1  # Fail the job
-            fi
       - terraform/init:
           path: main
       - terraform/validate:
