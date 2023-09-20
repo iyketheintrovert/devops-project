@@ -21,7 +21,7 @@ commands:
       - run:
           name: Installing kubectl and eksctl
           command: |
-                  apt install tar gzip -y
+                  yum install tar gzip -y
                   curl -sLO -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
                   chmod +x ./kubectl
                   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
