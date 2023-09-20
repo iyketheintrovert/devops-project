@@ -74,7 +74,7 @@ jobs:
       - run:
           name: Deploying application
           command: |
-              kubectl apply -f apps-v1.yml && kubectl apply -f service-v1.yml
+              kubectl apply -f app-v1.yml && kubectl apply -f service-v1.yml
       - destroy-cluster
 
 workflows:
