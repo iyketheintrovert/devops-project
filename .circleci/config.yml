@@ -15,21 +15,21 @@ orbs:
 #           command: |
 #             eksctl delete cluster --name devops-project
 
-#   install-kubectl-and-eksctl:
-#     description: install kubectl and eksctl packages
-#     steps:
-#       - run:
-#           name: Installing kubectl and eksctl
-#           command: |
-#                   apt install tar gzip -y
-#                   curl -sLO -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
-#                   chmod +x ./kubectl
-#                   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
-#                   kubectl version --client
+  # install-kubectl-and-eksctl:
+  #   description: install kubectl and eksctl packages
+  #   steps:
+  #     - run:
+  #         name: Installing kubectl and eksctl
+  #         command: |
+  #                 apt install tar gzip -y
+  #                 curl -sLO -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
+  #                 chmod +x ./kubectl
+  #                 mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+  #                 kubectl version --client
           
-#                   curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar -xzf eksctl_$(uname -s)_amd64.tar.gz -C /tmp && rm eksctl_$(uname -s)_amd64.tar.gz
-#                   sudo mv /tmp/eksctl /usr/local/bin
-#                   eksctl version
+  #                 curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar -xzf eksctl_$(uname -s)_amd64.tar.gz -C /tmp && rm eksctl_$(uname -s)_amd64.tar.gz
+  #                 sudo mv /tmp/eksctl /usr/local/bin
+  #                 eksctl version
 
 jobs:
   lint-dockerfile:
@@ -40,17 +40,17 @@ jobs:
           dockerfile: ./Dockerfile
           treat-warnings-as-errors: true
 
-  # build-image:
-  #   machine:
-  #     image: ubuntu-2204:2023.04.2
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Build docker container
-  #         command: |
-  #           docker image build -t sageiyke/web:v1
-  #           docker login -u sageiyke -p $DOCKER_PASS
-  #           docker push sageiyke/web:v1
+  build-image:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    steps:
+      - checkout
+      - run:
+          name: Build docker container
+          command: |
+            docker image build -t sageiyke/web:v1
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push sageiyke/web:v1
 
   # create-cluster:
   #   docker:
@@ -81,9 +81,9 @@ workflows:
   deploy-infra:
     jobs:
     - lint-dockerfile
-    # - build-image:
-    #     requires:
-    #     - lint-dockerfile
+    - build-image:
+        requires:
+        - lint-dockerfile
     # - create-cluster:
     #     requires:
     #     - build-image
