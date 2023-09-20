@@ -5,31 +5,31 @@ orbs:
   # aws-cli: circleci/aws-cli@4.1.1
   docker: circleci/docker@2.2.0
 
-# commands:
-#   destroy-cluster:
-#     description: Destroy EKS Cluster.
-#     steps:
-#       - run:
-#           name: Destroy environment
-#           when: on_fail
-#           command: |
-#             eksctl delete cluster --name devops-project
+commands:
+  destroy-cluster:
+    description: Destroy EKS Cluster.
+    steps:
+      - run:
+          name: Destroy environment
+          when: on_fail
+          command: |
+            eksctl delete cluster --name devops-project
 
-  # install-kubectl-and-eksctl:
-  #   description: install kubectl and eksctl packages
-  #   steps:
-  #     - run:
-  #         name: Installing kubectl and eksctl
-  #         command: |
-  #                 apt install tar gzip -y
-  #                 curl -sLO -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
-  #                 chmod +x ./kubectl
-  #                 mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
-  #                 kubectl version --client
+  install-kubectl-and-eksctl:
+    description: install kubectl and eksctl packages
+    steps:
+      - run:
+          name: Installing kubectl and eksctl
+          command: |
+                  apt install tar gzip -y
+                  curl -sLO -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.5/2023-09-14/bin/linux/amd64/kubectl
+                  chmod +x ./kubectl
+                  mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+                  kubectl version --client
           
-  #                 curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar -xzf eksctl_$(uname -s)_amd64.tar.gz -C /tmp && rm eksctl_$(uname -s)_amd64.tar.gz
-  #                 sudo mv /tmp/eksctl /usr/local/bin
-  #                 eksctl version
+                  curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar -xzf eksctl_$(uname -s)_amd64.tar.gz -C /tmp && rm eksctl_$(uname -s)_amd64.tar.gz
+                  sudo mv /tmp/eksctl /usr/local/bin
+                  eksctl version
 
 jobs:
   lint-dockerfile:
@@ -52,30 +52,30 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push sageiyke/web:v1
 
-  # create-cluster:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - install-kubectl-and-eksctl
-  #     - run:
-  #         name: Creating K8S cluster
-  #         command: |
-  #                 echo
-  #                 eksctl create cluster \
-  #                 --name devops-project \
-  #                 --region us-east-1 \
-  #                 --with-oidc \
-  #                 --ssh-access \
-  #                 --ssh-public-key sage-key
-  #                 kubectl get nodes -o wide
-  #                 kubectl create namespace dev-namespace
-  #                 aws eks update-kubeconfig --name devops-project --region us-east-1
-  #     - run:
-  #         name: Deploying application
-  #         command: |
-  #             kubectl apply -f apps-v1.yml && kubectl apply -f service-v1.yml
-  #     - destroy-cluster
+  create-cluster:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - install-kubectl-and-eksctl
+      - run:
+          name: Creating K8S cluster
+          command: |
+                  echo
+                  eksctl create cluster \
+                  --name devops-project \
+                  --region us-east-1 \
+                  --with-oidc \
+                  --ssh-access \
+                  --ssh-public-key sage-key
+                  kubectl get nodes -o wide
+                  kubectl create namespace dev-namespace
+                  aws eks update-kubeconfig --name devops-project --region us-east-1
+      - run:
+          name: Deploying application
+          command: |
+              kubectl apply -f apps-v1.yml && kubectl apply -f service-v1.yml
+      - destroy-cluster
 
 workflows:
   deploy-infra:
@@ -84,11 +84,11 @@ workflows:
     - build-image:
         requires:
         - lint-dockerfile
-    # - create-cluster:
+    - create-cluster:
+        requires:
+        - build-image
+    # - destroy-cluster:
     #     requires:
+    #     - lint-dockerfile
     #     - build-image
-    # # - destroy-cluster:
-    # #     requires:
-    # #     - lint-dockerfile
-    # #     - build-image
-    # #     - create-cluster
+    #     - create-cluster
