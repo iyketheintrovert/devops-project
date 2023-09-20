@@ -48,7 +48,7 @@ jobs:
       - run:
           name: Build docker container
           command: |
-            docker image build -t sageiyke/web:v1
+            docker image build -t sageiyke/web:v1 .
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push sageiyke/web:v1
 
